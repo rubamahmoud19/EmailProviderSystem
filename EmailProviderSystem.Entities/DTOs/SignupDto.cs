@@ -7,13 +7,8 @@ using System.Threading.Tasks;
 
 namespace EmailProviderSystem.Entities.DTOs
 {
-    public class SignupDto
+    public class SignupDto : UserDto
     {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-        [Required]
-        public string Password { get; set; }
     }
 
 }
