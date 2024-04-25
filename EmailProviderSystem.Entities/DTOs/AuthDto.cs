@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EmailProviderSystem.Entities.DTOs
 {
-    public class UserDto
+    public class AuthDto
     {
         [Required]
         [EmailAddress]
