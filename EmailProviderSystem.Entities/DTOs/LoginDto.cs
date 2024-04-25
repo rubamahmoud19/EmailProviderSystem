@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EmailProviderSystem.Entities.DTOs
 {
-    public class LoginDto : UserDto
+    public class LoginDto : AuthDto
     {
     }
 }

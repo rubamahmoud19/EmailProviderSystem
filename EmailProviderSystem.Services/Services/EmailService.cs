@@ -11,12 +11,15 @@ namespace EmailProviderSystem.Services.Services
 {
     public class EmailService : IEmailService
     {
-        
+        private IUserService _userService;
 
+        public EmailService(IUserService userService)
+        {
+            _userService = userService;
+        }
         public async Task<EmailDto> GetEmailByIdAsync(string id, string path)
         {
-            // get current user from _userService
-            var currentUserEmail = "moh@op.com";
+            string currentUserEmail = _userService.GetUserEmail();
             var projectPath = Directory.GetParent(Directory.GetCurrentDirectory());
             var emailPath = Path.Combine(projectPath.ToString(), "EmailProviderSystem.Data", "Users", currentUserEmail, path, id);
             try
@@ -33,8 +36,7 @@ namespace EmailProviderSystem.Services.Services
 
         public async Task<List<EmailDto>> GetEmailsAsync(string path)
         {
-            // get current user from _userService
-            var currentUserEmail = "moh@op.com";
+            string currentUserEmail = _userService.GetUserEmail();
             var projectPath = Directory.GetParent(Directory.GetCurrentDirectory());
             var emailPath = Path.Combine(projectPath.ToString(), "EmailProviderSystem.Data", "Users", currentUserEmail, path);
             

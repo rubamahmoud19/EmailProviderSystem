@@ -76,5 +76,12 @@ namespace EmailProviderSystem.Services.Services
         {
             return jwtToken != null && jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);
         }
+
+        public User GetUserFromToken(string token)
+        {
+            JwtSecurityToken validatedToken = ValidateJwtToken(token);
+            string email = validatedToken.Claims.First(claim => claim.Type == "email").Value;
+            return new User { Email = email };
+        }
     }
 }

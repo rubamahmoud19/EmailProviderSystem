@@ -1,20 +1,19 @@
 ﻿using EmailProviderSystem.Entities.DTOs;
 using EmailProviderSystem.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmailProviderSystem.Web.APIs.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class AuthController : ControllerBase
     {
-        private IUserService _userService;
+        private IAuthService _authService;
 
-        public UsersController(IUserService userService)
+        public AuthController(IAuthService userService)
         {
 
-            _userService = userService;
+            _authService = userService;
 
         }
 
@@ -23,9 +22,12 @@ namespace EmailProviderSystem.Web.APIs.Controllers
         {
             try
             {
-                string response = await _userService.Register(signupDto);
+                string token = await _authService.Register(signupDto);
 
-                return CreatedAtAction(nameof(Register), new { token = response });
+                TokenDto response = new TokenDto();
+                response.Token = token;
+
+                return CreatedAtAction(nameof(Register), response);
             }
             catch (Exception ex)
             {
@@ -37,9 +39,12 @@ namespace EmailProviderSystem.Web.APIs.Controllers
         {
             try
             {
-                string response = await _userService.Login(loginDto);
+                 string token = await _authService.Login(loginDto);
 
-                return Ok(new { token = response });
+                TokenDto response = new TokenDto();
+                response.Token = token;
+
+                return Ok(response);
             }
             catch (Exception ex)
             {

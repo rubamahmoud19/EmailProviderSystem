@@ -1,12 +1,13 @@
 ﻿using EmailProviderSystem.Entities.DTOs;
 using EmailProviderSystem.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using EmailProviderSystem.Web.APIs.Filters;
 
 namespace EmailProviderSystem.Web.APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [TypeFilter(typeof (AuthenticationFilter))]
     public class EmailsController : ControllerBase
     {
         private readonly IEmailService _emailService;
