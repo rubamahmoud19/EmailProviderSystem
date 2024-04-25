@@ -1,6 +1,6 @@
 ﻿namespace EmailProviderSystem.Entities.Entities
 {
-    public class File
+    public class Email
     {
         public Guid Id { get; set; }
         public string Subject { get; set; }
