@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EmailProviderSystem.Entities.DTOs
+﻿namespace EmailProviderSystem.Entities.DTOs
 {
     public class LoginDto : AuthDto
     {
