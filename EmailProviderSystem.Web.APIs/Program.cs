@@ -10,6 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IEmailService, EmailService>();
+builder.Services.AddSingleton<IUserService, UserService>();
+builder.Services.AddSingleton<ITokenService, TokenService>();
 
 var app = builder.Build();
 
