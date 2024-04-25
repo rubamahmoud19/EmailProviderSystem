@@ -1,11 +1,10 @@
-using System.Text;
+using EmailProviderSystem.Services;
 using EmailProviderSystem.Services.Interfaces;
 using EmailProviderSystem.Services.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
-
+using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -62,6 +61,8 @@ builder.Services.AddSingleton<IAuthService, AuthService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddSingleton<FolderService>();
+
 
 var app = builder.Build();
 

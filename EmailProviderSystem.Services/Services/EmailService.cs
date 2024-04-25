@@ -11,10 +11,12 @@ namespace EmailProviderSystem.Services.Services
 {
     public class EmailService : IEmailService
     {
-        private IUserService _userService;
+        private FolderService _folderService;
+        private UserService _userService;
 
-        public EmailService(IUserService userService)
+        public EmailService(FolderService folderService, UserService userService)
         {
+            _folderService = folderService;
             _userService = userService;
         }
         public async Task<EmailDto> GetEmailByIdAsync(string id, string path)
