@@ -21,16 +21,30 @@ namespace EmailProviderSystem.Web.APIs.Controllers
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] SignupDto signupDto)
         {
-            string response = await _userService.Register(signupDto);
+            try
+            {
+                string response = await _userService.Register(signupDto);
 
-            return CreatedAtAction(nameof(Register), new { token = response });
+                return CreatedAtAction(nameof(Register), new { token = response });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new { message = ex.Message});
+            }
         }
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            string response = await _userService.Login(loginDto);
+            try
+            {
+                string response = await _userService.Login(loginDto);
 
-            return Ok(new { token = response });
+                return Ok(new { token = response });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new { message = ex.Message});
+            }
         }
     }
 }

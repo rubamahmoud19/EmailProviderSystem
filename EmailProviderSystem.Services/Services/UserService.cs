@@ -64,6 +64,8 @@ namespace EmailProviderSystem.Services.Services
                 throw new Exception("Email is already taken");
             }
 
+            // Create user in database
+
             string token = _tokenService.GenerateToken(user);
 
             return Task.FromResult(token);
