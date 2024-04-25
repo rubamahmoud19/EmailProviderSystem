@@ -26,5 +26,22 @@ namespace EmailProviderSystem.Web.APIs.Controllers
         {
             return await _emailService.GetEmailsAsync(path);
         }
+        [HttpPost("Send")]
+        public async Task<bool> SendEmail([FromBody] EmailDto request)
+        {
+            return await _emailService.SendEmailAsync(request);
+        }
+
+        [HttpGet("Move/{source}/{destination}")]
+        public async Task<bool> MoveEmail([FromRoute] string source, string destination)
+        {
+            return await _emailService.MoveEmailAsync(source, destination);
+        }
+
+        [HttpPost("Status/{path}/{id}")]
+        public async Task<bool> MarkAsReadUnread(string path, string id)
+        {
+            return await _emailService.MarkAsReadUnreadAsync(path, id);
+        }
     }
 }
