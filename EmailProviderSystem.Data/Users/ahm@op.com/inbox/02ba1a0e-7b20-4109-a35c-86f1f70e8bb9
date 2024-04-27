@@ -1,0 +1,14 @@
+{
+  "Subject": "(No subject)",
+  "Body": "string",
+  "From": "moh@op.com",
+  "To": [
+    "ahm@op.com"
+  ],
+  "Cc": [
+    "ahm@op.com",
+    "zater@op.com"
+  ],
+  "IsRead": false,
+  "IsImportant": false
+}
