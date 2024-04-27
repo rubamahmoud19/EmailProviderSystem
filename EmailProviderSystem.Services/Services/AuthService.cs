@@ -11,10 +11,12 @@ namespace EmailProviderSystem.Services.Services
     {
 
         private ITokenService _tokenService;
+        private readonly IFileService _fileService;
 
-        public AuthService(ITokenService tokenService)
+        public AuthService(ITokenService tokenService, IFileService fileService)
         {
             _tokenService = tokenService;
+            _fileService = fileService;
         }
         private User CreateUserFromDto(AuthDto userDto)
         {
@@ -31,15 +33,15 @@ namespace EmailProviderSystem.Services.Services
         }
 
         public Task<string> Login(LoginDto loginDto)
-        { 
-            User user = CreateUserFromDto(loginDto);
-
-            bool isUserFound = true;
+        {
+            bool isUserFound = _fileService.IsDirectoryExist(loginDto.Email);
 
             if (!isUserFound)
             {
                 throw new Exception("User not found");
             }
+
+            User user = CreateUserFromDto(loginDto);
 
             bool isPasswordCorrect = true;
 
@@ -57,7 +59,7 @@ namespace EmailProviderSystem.Services.Services
         {
             User user = CreateUserFromDto(signupDto);
 
-            const bool isEmailTaken = false;
+            bool isEmailTaken = _fileService.IsDirectoryExist(signupDto.Email);
 
             if (isEmailTaken)
             {
@@ -65,7 +67,13 @@ namespace EmailProviderSystem.Services.Services
             }
 
             // Create user in database
-
+            bool isCreated = _fileService.CreateUserFolder(signupDto.Email);
+            if (isCreated)
+            {
+                _fileService.CreateCustomFolder(signupDto.Email, "inbox");
+                _fileService.CreateCustomFolder(signupDto.Email, "sent");
+                _fileService.CreateCustomFolder(signupDto.Email, "important");
+            }
             string token = _tokenService.GenerateToken(user);
 
             return Task.FromResult(token);

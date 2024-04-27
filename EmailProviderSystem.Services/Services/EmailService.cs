@@ -1,8 +1,9 @@
 ﻿using EmailProviderSystem.Entities.DTOs;
 using EmailProviderSystem.Services.Interfaces;
-using EmailProviderSystem.Services.StaticServices;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,127 +12,95 @@ namespace EmailProviderSystem.Services.Services
 {
     public class EmailService : IEmailService
     {
-        private FolderService _folderService;
-        private UserService _userService;
+        private IFileService _fileService;
+        private IUserService _userService;
 
-        public EmailService(FolderService folderService, UserService userService)
+        public EmailService(IFileService fileService, IUserService userService)
         {
-            _folderService = folderService;
+            _fileService = fileService;
             _userService = userService;
         }
-        public async Task<EmailDto> GetEmailByIdAsync(string id, string path)
+        // Done
+        public async Task<EmailDto?> GetEmailByIdAsync(string id, string path)
         {
             string currentUserEmail = _userService.GetUserEmail();
-            var projectPath = Directory.GetParent(Directory.GetCurrentDirectory());
-            var emailPath = Path.Combine(projectPath.ToString(), "EmailProviderSystem.Data", "Users", currentUserEmail, path, id);
-            try
-            {
-                var emailItem = await JsonFileReader.ReadAsync<EmailDto>(emailPath);
-                return emailItem;
-            }
-            catch (Exception)
-            {
-                throw new DirectoryNotFoundException(emailPath);
-            }
+
+            if (string.IsNullOrEmpty(currentUserEmail))
+                throw new Exception("Unauthorize User");
+
+            var email = await _fileService.GetEmailFileAsync(path, id);
+
+            return email;
             
         }
-
+        // Done
         public async Task<List<EmailDto>> GetEmailsAsync(string path)
         {
             string currentUserEmail = _userService.GetUserEmail();
-            var projectPath = Directory.GetParent(Directory.GetCurrentDirectory());
-            var emailPath = Path.Combine(projectPath.ToString(), "EmailProviderSystem.Data", "Users", currentUserEmail, path);
-            
-            List<EmailDto> result = new List<EmailDto>();
-            try
-            {
-                var files = Directory.GetFiles(emailPath);
-                foreach ( var file in files )
-                {
-                    var emailItem = await JsonFileReader.ReadAsync<EmailDto>(file);
-                    result.Add(emailItem);
-                }
-                return result;
-            }
-            catch (Exception)
-            {
-                throw new DirectoryNotFoundException(emailPath);
-            }
+
+            if (string.IsNullOrEmpty(currentUserEmail))
+                throw new Exception("Unauthorize User");
+
+            var emails = await _fileService.GetEmailsFileAsync(path);
+
+            return emails;
         }
 
         public async Task<bool> MarkAsReadUnreadAsync(string path, string id)
         {
-            // get user email from context
-            var email = "moh@op.com";
-            // check file exist or not
-            if (false)
-                throw new FileNotFoundException("Path not found");
-            // read file
+            var currentUserEmail = _userService.GetUserEmail();
 
-            // delete file
+            if (string.IsNullOrEmpty(currentUserEmail))
+                throw new Exception("Unauthorize User");
 
-            // write file
+            await _fileService.MarkEmailAsReadUnreadAsync(path, id);
 
             return true;
         }
-
-        public async Task<bool> MoveEmailAsync(string source, string destination)
+        // Done
+        public async Task<bool> MoveEmailAsync(MoveEmailDto req)
         {
-            // Get current email from context
-            var email = "moh@op.com";
-            var projectPath = Directory.GetParent(Directory.GetCurrentDirectory());
-            var usersPath = Path.Combine(projectPath.ToString(), "EmailProviderSystem.Data", "Users");
+            string currentUserEmail = _userService.GetUserEmail();
 
-            if (source.ToLower() == "sent" || destination.ToLower() == "sent")
+            if (string.IsNullOrEmpty(currentUserEmail))
+                throw new Exception("Unauthorize User");
+
+            if (req.Source.ToLower() == "sent" || req.Destination.ToLower() == "sent")
                 throw new Exception("Invalid source or destination");
 
-            var sourcePath = Path.Combine(projectPath.ToString(), email, source);
-            var destinationPath = Path.Combine(projectPath.ToString(), email, destination);
+            var isMoved = await _fileService.MoveFile(req.Source, req.Destination, req.fileName);
 
-            // Check if source is exist
-            // Check if destination is exist
-            if (false)
-                throw new Exception("Source or destination does not exist"); 
-
-            // Move file fileService.Move(sourcePath, destinationPath)
-
-            return true;
+            return isMoved;
         }
 
-        public async Task<bool> SendEmailAsync(EmailDto request)
+        public async Task<bool> SendEmailAsync(EmailDto emailDto)
         {
-            // check if 'from' is the same email in the context
-            if (false)
-                throw new Exception("Unauthorized User");
-            if (!request.To.Any() && !request.Cc.Any())
+            string currentUserEmail = _userService.GetUserEmail();
+
+            if (string.IsNullOrEmpty(currentUserEmail))
+                throw new Exception("Unauthorize User");
+
+            if (currentUserEmail != emailDto.From)
+                throw new Exception("Invalid sender email");
+
+            if (!emailDto.To.Any() && !emailDto.Cc.Any())
                 throw new Exception("At least one recipient is required");
-            if (string.IsNullOrEmpty(request.Subject))
-                request.Subject = "(No subject)";
-            var projectPath = Directory.GetParent(Directory.GetCurrentDirectory());
-            var usersPath = Path.Combine(projectPath.ToString(), "EmailProviderSystem.Data", "Users");
 
-            SaveEmailsInInbox(request.To, usersPath);
-            SaveEmailsInInbox(request.Cc, usersPath);
+            if (string.IsNullOrEmpty(emailDto.Subject))
+                emailDto.Subject = "(No subject)";
 
-            // Add email in the Sent folder
-            var sentPath = Path.Combine(usersPath, request.From, "Sent");
-
-            return true;
-        }
-
-        private async Task SaveEmailsInInbox(List<string> recipients, string usersPath)
-        {
+            // Combine two lists and ignore duplicates
+            List<string> recipients = emailDto.To.Union(emailDto.Cc).ToList();
             foreach (var recipient in recipients)
             {
-                // Check if recipient email exist
-                var emailPath = Path.Combine(usersPath, recipient);
-                if (true)
-                {
-                    var pathToSave = Path.Combine(emailPath, "Inbox");
-                    // Add email in the Inbox    
-                }
-
+                await _fileService.CreateFile(emailDto, recipient, "inbox");
             }
+
+            // Add email in the Sent folder
+            await _fileService.CreateFile(emailDto, emailDto.From, "sent");
+
+            return true;
         }
+
     }
 }

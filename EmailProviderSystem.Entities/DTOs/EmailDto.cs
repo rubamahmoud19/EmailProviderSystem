@@ -12,5 +12,7 @@
 
         public List<string> Cc { get; set; }
         public bool IsRead { get; set; }
+        public bool IsImportant { get; set; }
+
     }
 }

@@ -7,7 +7,7 @@ namespace EmailProviderSystem.Web.APIs.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [TypeFilter(typeof (AuthenticationFilter))]
+    [TypeFilter(typeof(AuthenticationFilter))]
     public class EmailsController : ControllerBase
     {
         private readonly IEmailService _emailService;
@@ -16,33 +16,85 @@ namespace EmailProviderSystem.Web.APIs.Controllers
         {
             _emailService = emailService;
         }
-        
+
         [HttpGet("{path}/{id}")]
-        public async Task<EmailDto> GetEmailById([FromRoute] string path, string id)
+        public async Task<IActionResult> GetEmailById([FromRoute] string path, string id)
         {
-            return await _emailService.GetEmailByIdAsync(id, path);
-        }
-        [HttpGet("all/{path}")]
-        public async Task<List<EmailDto>> GetEmails([FromRoute] string path)
-        {
-            return await _emailService.GetEmailsAsync(path);
-        }
-        [HttpPost("Send")]
-        public async Task<bool> SendEmail([FromBody] EmailDto request)
-        {
-            return await _emailService.SendEmailAsync(request);
+            try
+            {
+                var email = await _emailService.GetEmailByIdAsync(id, path);
+
+                if (email == null)
+                    return StatusCode(StatusCodes.Status404NotFound, new { message = "Email Not Found" });
+
+                return Ok(email);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new { message = ex.Message });
+            }
+            
         }
 
-        [HttpGet("Move/{source}/{destination}")]
-        public async Task<bool> MoveEmail([FromRoute] string source, string destination)
+        [HttpGet("all/{path}")]
+        public async Task<IActionResult> GetEmails([FromRoute] string path)
         {
-            return await _emailService.MoveEmailAsync(source, destination);
+            try
+            {
+                var emails = await _emailService.GetEmailsAsync(path);
+                return Ok(emails);
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
+
+        }
+        [HttpPost("Send")]
+        public async Task<IActionResult> SendEmail([FromBody] EmailDto request)
+        {
+            try
+            {
+                var isSent = await _emailService.SendEmailAsync(request);
+                return Ok(isSent);
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
+            
+        }
+
+        [HttpPost("Move")]
+        public async Task<IActionResult> MoveEmail([FromBody] MoveEmailDto req)
+        {
+            try
+            {
+                var isMoved = await _emailService.MoveEmailAsync(req);
+                return Ok(isMoved);
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
         }
 
         [HttpPost("Status/{path}/{id}")]
-        public async Task<bool> MarkAsReadUnread(string path, string id)
+        public async Task<IActionResult> MarkAsReadUnread(string path, string id)
         {
-            return await _emailService.MarkAsReadUnreadAsync(path, id);
+            try
+            {
+                var isChanged = await _emailService.MarkAsReadUnreadAsync(path, id);
+                return Ok(isChanged);
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = ex.Message });
+            }
         }
     }
 }
