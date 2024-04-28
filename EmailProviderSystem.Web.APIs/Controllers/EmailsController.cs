@@ -82,7 +82,7 @@ namespace EmailProviderSystem.Web.APIs.Controllers
             }
         }
 
-        [HttpPost("Status/{path}/{id}")]
+        [HttpPost("MarkAsReadUnread/{path}/{id}")]
         public async Task<IActionResult> MarkAsReadUnread(string path, string id)
         {
             try
