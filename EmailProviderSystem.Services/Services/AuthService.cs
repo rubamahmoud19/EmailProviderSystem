@@ -34,14 +34,15 @@ namespace EmailProviderSystem.Services.Services
 
         public Task<string> Login(LoginDto loginDto)
         {
-            bool isUserFound = _fileService.IsDirectoryExist(loginDto.Email);
+
+            User user = CreateUserFromDto(loginDto);
+
+            bool isUserFound = _fileService.IsDirectoryExist(user.Email);
 
             if (!isUserFound)
             {
                 throw new Exception("User not found");
             }
-
-            User user = CreateUserFromDto(loginDto);
 
             bool isPasswordCorrect = true;
 
@@ -59,7 +60,7 @@ namespace EmailProviderSystem.Services.Services
         {
             User user = CreateUserFromDto(signupDto);
 
-            bool isEmailTaken = _fileService.IsDirectoryExist(signupDto.Email);
+            bool isEmailTaken = _fileService.IsDirectoryExist(user.Email);
 
             if (isEmailTaken)
             {
@@ -67,7 +68,7 @@ namespace EmailProviderSystem.Services.Services
             }
 
             // Create user in database
-            bool isCreated = _fileService.CreateUserFolder(signupDto.Email);
+            bool isCreated = _fileService.CreateUserFolder(user.Email);
             if (isCreated)
             {
                 _fileService.CreateCustomFolder(signupDto.Email, "inbox");
