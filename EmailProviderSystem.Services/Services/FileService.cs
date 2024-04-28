@@ -3,6 +3,7 @@ using EmailProviderSystem.Services.Interfaces;
 using System.Data;
 using Newtonsoft.Json;
 using System.Text.Json;
+using EmailProviderSystem.Entities.Entities;
 
 
 namespace EmailProviderSystem.Services.Services
@@ -13,7 +14,7 @@ namespace EmailProviderSystem.Services.Services
         public FileService(IUserService userService)
         {
             _userService = userService;
-            
+
         }
         public bool IsDirectoryExist(string email)
         {
@@ -21,12 +22,21 @@ namespace EmailProviderSystem.Services.Services
             var directoryPath = Path.Combine(root, email);
             return Directory.Exists(directoryPath);
         }
-        public bool CreateUserFolder(string email)
+        public bool CreateUserFolders(User user)
         {
             var root = GetRootDirectory();
-            Directory.CreateDirectory(email);
-            return true;
+            var directoryPath = Path.Combine(root, user.Email);
+            Directory.CreateDirectory(directoryPath);
 
+            CreateCustomFolder(user.Email, "inbox");
+            CreateCustomFolder(user.Email, "sent");
+            CreateCustomFolder(user.Email, "important");
+
+            var filePathToSave = Path.Combine(directoryPath, "data.json");
+            string json = JsonConvert.SerializeObject(user);
+            File.WriteAllText(filePathToSave, json);
+
+            return true;
         }
         public bool CreateCustomFolder(string email, string folderName)
         {
@@ -65,6 +75,21 @@ namespace EmailProviderSystem.Services.Services
             }
 
             return subFolders;
+        }
+
+        public User? GetUserData(string email)
+        {
+            var root = GetRootDirectory();
+            var directoryPath = Path.Combine(root, email);
+            var filePath = Path.Combine(directoryPath, "data.json");
+
+            if (!File.Exists(filePath))
+                return null;
+
+            string json = File.ReadAllText(filePath);
+            User user = JsonConvert.DeserializeObject<User>(json);
+
+            return user;
         }
 
         public List<string> GetFiles(string path)
@@ -109,7 +134,7 @@ namespace EmailProviderSystem.Services.Services
 
             File.Move(sourceFilePath, destinationFilePath);
             return true;
-            
+
         }
 
         public async Task<bool> CreateFile<T>(T fileDto, string recipient, string directory)
@@ -117,11 +142,11 @@ namespace EmailProviderSystem.Services.Services
             var root = GetRootDirectory();
 
             var directoryPath = Path.Combine(root, recipient);
-            
+
             if (!Directory.Exists(directoryPath))
                 return false;
 
-            var emailUUID = Guid.NewGuid().ToString().Replace('-',' ');
+            var emailUUID = Guid.NewGuid().ToString().Replace('-', ' ');
             var filePathToSave = Path.Combine(directoryPath, directory, emailUUID);
 
             // Convert the object to JSON string

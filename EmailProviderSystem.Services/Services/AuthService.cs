@@ -37,16 +37,14 @@ namespace EmailProviderSystem.Services.Services
 
             User user = CreateUserFromDto(loginDto);
 
-            bool isUserFound = _fileService.IsDirectoryExist(user.Email);
+            User? userFromDb = _fileService.GetUserData(user.Email);
 
-            if (!isUserFound)
+            if (userFromDb == null)
             {
-                throw new Exception("User not found");
+                throw new Exception("Email not found");
             }
 
-            bool isPasswordCorrect = true;
-
-            if (!isPasswordCorrect)
+            if (userFromDb.HashPassword != user.HashPassword)
             {
                 throw new Exception("Password is incorrect");
             }
@@ -68,13 +66,13 @@ namespace EmailProviderSystem.Services.Services
             }
 
             // Create user in database
-            bool isCreated = _fileService.CreateUserFolder(user.Email);
-            if (isCreated)
+            bool isCreated = _fileService.CreateUserFolders(user);
+
+            if (!isCreated)
             {
-                _fileService.CreateCustomFolder(signupDto.Email, "inbox");
-                _fileService.CreateCustomFolder(signupDto.Email, "sent");
-                _fileService.CreateCustomFolder(signupDto.Email, "important");
+                throw new Exception("User could not be created");
             }
+
             string token = _tokenService.GenerateToken(user);
 
             return Task.FromResult(token);

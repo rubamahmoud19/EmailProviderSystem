@@ -11,7 +11,7 @@ namespace EmailProviderSystem.Services.Interfaces
 {
     public interface IFileService
     {
-        public bool CreateUserFolder(string email);
+        public bool CreateUserFolders(User user);
         public bool IsDirectoryExist(string email);
         public bool CreateCustomFolder(string email, string folderName);
         public Task<EmailDto?> GetEmailFileAsync(string path, string id);
@@ -19,6 +19,7 @@ namespace EmailProviderSystem.Services.Interfaces
         public Task<bool> MoveFile(string source, string destination, string fileName);
         public Task<bool> CreateFile<T>(T fileDto, string recipient, string directory);
         public Task MarkEmailAsReadUnreadAsync(string path, string id);
+        public User? GetUserData(string email);
         //public bool IsFolderExists(string path);
         //public List<Folder> GetFolders();
     }
