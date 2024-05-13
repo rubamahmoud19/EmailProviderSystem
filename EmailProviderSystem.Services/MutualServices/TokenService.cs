@@ -7,7 +7,7 @@ using EmailProviderSystem.Entities.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace EmailProviderSystem.Services.Services
+namespace EmailProviderSystem.Services.MutualServices
 {
     public class TokenService : ITokenService
     {

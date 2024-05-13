@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 
-namespace EmailProviderSystem.Services.Services
+namespace EmailProviderSystem.Services.MutualServices
 {
     public class UserService : IUserService
     {

@@ -6,12 +6,12 @@ using System.Text.Json;
 using EmailProviderSystem.Entities.Entities;
 
 
-namespace EmailProviderSystem.Services.Services
+namespace EmailProviderSystem.Services.FilebaseServices
 {
-    public class FileService : IFileService
+    public class FilebaseFileService : IFileService
     {
         private IUserService _userService;
-        public FileService(IUserService userService)
+        public FilebaseFileService(IUserService userService)
         {
             _userService = userService;
 
@@ -103,12 +103,12 @@ namespace EmailProviderSystem.Services.Services
             return fileNames;
         }
 
-        public string GetRootDirectory()
+        private string GetRootDirectory()
         {
             DirectoryInfo currentDir = new DirectoryInfo(Environment.CurrentDirectory);
             DirectoryInfo parentDir = currentDir.Parent;
 
-            return Path.Combine(parentDir.ToString(), "EmailProviderSystem.Data", "Users");
+            return Path.Combine(parentDir.ToString(), "EmailProviderSystem.Data", "Filebase", "Users");
         }
 
         //public Move files

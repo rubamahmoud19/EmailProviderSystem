@@ -22,14 +22,16 @@ namespace EmailProviderSystem.Web.APIs.Filters
             {
                 authHeader = authHeader.Replace("Bearer ", "");
 
-                if (!_tokenService.ValidateToken(authHeader))
+                if (!(_tokenService.ValidateToken(authHeader)))
                 {
                     context.Result = new UnauthorizedObjectResult(new { message = "Invalid token" });
                 }
+                else
+                {
+                    User user = _tokenService.GetUserFromToken(authHeader);
 
-                User user = _tokenService.GetUserFromToken(authHeader);
-
-                context.HttpContext.Items["Email"] = user.Email;
+                    context.HttpContext.Items["Email"] = user.Email;
+                }
             }
             else
             {

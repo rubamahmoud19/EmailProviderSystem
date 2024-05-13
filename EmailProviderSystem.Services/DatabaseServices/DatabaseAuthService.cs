@@ -5,18 +5,16 @@ using EmailProviderSystem.Services.Interfaces;
 using System.Text;
 
 
-namespace EmailProviderSystem.Services.Services
+namespace EmailProviderSystem.Services.DatabaseServices
 {
-    public class AuthService : IAuthService
+    public class DatabaseAuthService : IAuthService
     {
 
         private ITokenService _tokenService;
-        private readonly IFileService _fileService;
 
-        public AuthService(ITokenService tokenService, IFileService fileService)
+        public DatabaseAuthService(ITokenService tokenService)
         {
             _tokenService = tokenService;
-            _fileService = fileService;
         }
         private User CreateUserFromDto(AuthDto userDto)
         {
@@ -37,7 +35,8 @@ namespace EmailProviderSystem.Services.Services
 
             User user = CreateUserFromDto(loginDto);
 
-            User? userFromDb = _fileService.GetUserData(user.Email);
+            // need update
+            User? userFromDb = null;
 
             if (userFromDb == null)
             {
@@ -48,7 +47,7 @@ namespace EmailProviderSystem.Services.Services
             {
                 throw new Exception("Password is incorrect");
             }
-            
+
             string token = _tokenService.GenerateToken(user);
 
             return Task.FromResult(token);
@@ -58,15 +57,16 @@ namespace EmailProviderSystem.Services.Services
         {
             User user = CreateUserFromDto(signupDto);
 
-            bool isEmailTaken = _fileService.IsDirectoryExist(user.Email);
+            // need update
+            bool isEmailTaken = false;
 
             if (isEmailTaken)
             {
                 throw new Exception("Email is already taken");
             }
 
-            // Create user in database
-            bool isCreated = _fileService.CreateUserFolders(user);
+            // need update
+            bool isCreated = false;
 
             if (!isCreated)
             {

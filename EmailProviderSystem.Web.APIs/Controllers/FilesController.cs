@@ -1,6 +1,6 @@
 ﻿using EmailProviderSystem.Entities.Entities;
 using EmailProviderSystem.Services.Interfaces;
-using EmailProviderSystem.Services.Services;
+using EmailProviderSystem.Services.FilebaseServices;
 using EmailProviderSystem.Web.APIs.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

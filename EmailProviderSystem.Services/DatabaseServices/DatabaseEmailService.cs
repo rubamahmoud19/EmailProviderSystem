@@ -8,19 +8,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailProviderSystem.Services.Services
+namespace EmailProviderSystem.Services.MutualServices
 {
-    public class EmailService : IEmailService
+    public class DatabaseEmailService : IEmailService
     {
-        private IFileService _fileService;
         private IUserService _userService;
 
-        public EmailService(IFileService fileService, IUserService userService)
+        public DatabaseEmailService(IUserService userService)
         {
-            _fileService = fileService;
             _userService = userService;
         }
-        // Done
         public async Task<EmailDto?> GetEmailByIdAsync(string id, string path)
         {
             string currentUserEmail = _userService.GetUserEmail();
@@ -28,12 +25,11 @@ namespace EmailProviderSystem.Services.Services
             if (string.IsNullOrEmpty(currentUserEmail))
                 throw new Exception("Unauthorize User");
 
-            var email = await _fileService.GetEmailFileAsync(path, id);
+            // need update
+            var email = new EmailDto();
 
             return email;
-            
         }
-        // Done
         public async Task<List<EmailDto>> GetEmailsAsync(string path)
         {
             string currentUserEmail = _userService.GetUserEmail();
@@ -41,7 +37,12 @@ namespace EmailProviderSystem.Services.Services
             if (string.IsNullOrEmpty(currentUserEmail))
                 throw new Exception("Unauthorize User");
 
-            var emails = await _fileService.GetEmailsFileAsync(path);
+            // need update
+            var emails = new List<EmailDto>
+            {
+              new EmailDto(),
+              new EmailDto()
+            };
 
             return emails;
         }
@@ -53,11 +54,11 @@ namespace EmailProviderSystem.Services.Services
             if (string.IsNullOrEmpty(currentUserEmail))
                 throw new Exception("Unauthorize User");
 
-            await _fileService.MarkEmailAsReadUnreadAsync(path, id);
+            // need update
+            //await _fileService.MarkEmailAsReadUnreadAsync(path, id);
 
             return true;
         }
-        // Done
         public async Task<bool> MoveEmailAsync(MoveEmailDto req)
         {
             string currentUserEmail = _userService.GetUserEmail();
@@ -68,11 +69,11 @@ namespace EmailProviderSystem.Services.Services
             if (req.Source.ToLower() == "sent" || req.Destination.ToLower() == "sent")
                 throw new Exception("Invalid source or destination");
 
-            var isMoved = await _fileService.MoveFile(req.Source, req.Destination, req.fileName);
+            // need update
+            //var isMoved = await _fileService.MoveFile(req.Source, req.Destination, req.fileName);
 
-            return isMoved;
+            return false;
         }
-
         public async Task<bool> SendEmailAsync(EmailDto emailDto)
         {
             string currentUserEmail = _userService.GetUserEmail();
@@ -93,11 +94,12 @@ namespace EmailProviderSystem.Services.Services
             List<string> recipients = emailDto.To.Union(emailDto.Cc).ToList();
             foreach (var recipient in recipients)
             {
-                await _fileService.CreateFile(emailDto, recipient, "inbox");
+                // need update
+                //await _fileService.CreateFile(emailDto, recipient, "inbox");
             }
 
-            // Add email in the Sent folder
-            await _fileService.CreateFile(emailDto, emailDto.From, "sent");
+            // need update
+            //await _fileService.CreateFile(emailDto, emailDto.From, "sent");
 
             return true;
         }
