@@ -10,7 +10,7 @@ namespace EmailProviderSystem.Data.Database.Configs
         {
             modelBuilder.Property(u => u.Name).IsRequired();
             modelBuilder.HasOne(u => u.User).WithMany(u => u.Folders)
-                .HasForeignKey(u => u.User_Email)
+                .HasForeignKey(u => u.UserEmail)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         }

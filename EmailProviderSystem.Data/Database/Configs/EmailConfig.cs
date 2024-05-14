@@ -17,7 +17,7 @@ namespace EmailProviderSystem.Data.Database.Configs
             modelBuilder.Property(u => u.From).IsRequired();
 
             modelBuilder.HasOne(u => u.Folder).WithMany(u => u.Emails)
-                .HasForeignKey(u => u.Folder_Id)
+                .HasForeignKey(u => u.FolderId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         }

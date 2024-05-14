@@ -17,7 +17,7 @@
         public bool IsRead { get; set; } = false;
         public bool IsImportant { get; set; } = false;
 
-        public int Folder_Id {  get; set; }
+        public int FolderId {  get; set; }
 
         public Folder Folder { get; set; }
 
