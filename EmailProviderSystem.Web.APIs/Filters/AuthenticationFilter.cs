@@ -1,8 +1,8 @@
 using System;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using EmailProviderSystem.Services.Interfaces;
 using EmailProviderSystem.Entities.Entities;
+using EmailProviderSystem.Services.Interfaces.IServices;
 
 namespace EmailProviderSystem.Web.APIs.Filters
 {

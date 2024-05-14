@@ -1,11 +1,7 @@
-﻿using EmailProviderSystem.Entities.Entities;
-using EmailProviderSystem.Services.Interfaces;
-using EmailProviderSystem.Services.FilebaseServices;
-using EmailProviderSystem.Web.APIs.Filters;
-using Microsoft.AspNetCore.Http;
+﻿using EmailProviderSystem.Web.APIs.Filters;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Win32;
-using System.IO;
+using EmailProviderSystem.Services.Interfaces.IServices;
+using EmailProviderSystem.Services.Interfaces.IRepositories;
 
 namespace EmailProviderSystem.Web.APIs.Controllers
 {
@@ -14,11 +10,11 @@ namespace EmailProviderSystem.Web.APIs.Controllers
     [TypeFilter(typeof(AuthenticationFilter))]
     public class FilesController : ControllerBase
     {
-        private readonly IFileService _fileService;
+        private readonly IDataRepository _dataRepository;
 
-        public FilesController(IFileService fileService)
+        public FilesController(IDataRepository dataRepository)
         {
-            _fileService = fileService;
+            _dataRepository = dataRepository;
         }
         [HttpPost("Folder/Create")]
         public async Task<IActionResult> CreateFolder([FromBody] string folderName)
@@ -29,7 +25,7 @@ namespace EmailProviderSystem.Web.APIs.Controllers
                 if (string.IsNullOrEmpty(userEmail) )
                     return StatusCode(StatusCodes.Status403Forbidden, new { message = "Unauthorize user"});
 
-                var isCreated = _fileService.CreateCustomFolder(userEmail, folderName);
+                var isCreated = _dataRepository.CreateCustomFolder(userEmail, folderName);
                 return CreatedAtAction(nameof(CreateFolder), isCreated);
             }
 

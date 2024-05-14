@@ -1,5 +1,6 @@
 ﻿using EmailProviderSystem.Entities.DTOs;
-using EmailProviderSystem.Services.Interfaces;
+using EmailProviderSystem.Services.Interfaces.IRepositories;
+using EmailProviderSystem.Services.Interfaces.IServices;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,16 +9,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailProviderSystem.Services.MutualServices
+namespace EmailProviderSystem.Services
 {
-    public class DatabaseEmailService : IEmailService
+    public class EmailService : IEmailService
     {
+        private IDataRepository _dataRepository;
         private IUserService _userService;
 
-        public DatabaseEmailService(IUserService userService)
+        public EmailService(IDataRepository dataRepository, IUserService userService)
         {
+            _dataRepository = dataRepository;
             _userService = userService;
         }
+        // Done
         public async Task<EmailDto?> GetEmailByIdAsync(string id, string path)
         {
             string currentUserEmail = _userService.GetUserEmail();
@@ -25,11 +29,12 @@ namespace EmailProviderSystem.Services.MutualServices
             if (string.IsNullOrEmpty(currentUserEmail))
                 throw new Exception("Unauthorize User");
 
-            // need update
-            var email = new EmailDto();
+            var email = await _dataRepository.GetEmailAsync(path, id);
 
             return email;
+
         }
+        // Done
         public async Task<List<EmailDto>> GetEmailsAsync(string path)
         {
             string currentUserEmail = _userService.GetUserEmail();
@@ -37,12 +42,7 @@ namespace EmailProviderSystem.Services.MutualServices
             if (string.IsNullOrEmpty(currentUserEmail))
                 throw new Exception("Unauthorize User");
 
-            // need update
-            var emails = new List<EmailDto>
-            {
-              new EmailDto(),
-              new EmailDto()
-            };
+            var emails = await _dataRepository.GetEmailsAsync(path);
 
             return emails;
         }
@@ -54,11 +54,11 @@ namespace EmailProviderSystem.Services.MutualServices
             if (string.IsNullOrEmpty(currentUserEmail))
                 throw new Exception("Unauthorize User");
 
-            // need update
-            //await _fileService.MarkEmailAsReadUnreadAsync(path, id);
+            await _dataRepository.MarkEmailAsReadUnreadAsync(path, id);
 
             return true;
         }
+        // Done
         public async Task<bool> MoveEmailAsync(MoveEmailDto req)
         {
             string currentUserEmail = _userService.GetUserEmail();
@@ -69,11 +69,11 @@ namespace EmailProviderSystem.Services.MutualServices
             if (req.Source.ToLower() == "sent" || req.Destination.ToLower() == "sent")
                 throw new Exception("Invalid source or destination");
 
-            // need update
-            //var isMoved = await _fileService.MoveFile(req.Source, req.Destination, req.fileName);
+            var isMoved = await _dataRepository.MoveEmail(req.Source, req.Destination, req.fileName);
 
-            return false;
+            return isMoved;
         }
+
         public async Task<bool> SendEmailAsync(EmailDto emailDto)
         {
             string currentUserEmail = _userService.GetUserEmail();
@@ -94,12 +94,11 @@ namespace EmailProviderSystem.Services.MutualServices
             List<string> recipients = emailDto.To.Union(emailDto.Cc).ToList();
             foreach (var recipient in recipients)
             {
-                // need update
-                //await _fileService.CreateFile(emailDto, recipient, "inbox");
+                await _dataRepository.CreateEmail(emailDto, recipient, "inbox");
             }
 
-            // need update
-            //await _fileService.CreateFile(emailDto, emailDto.From, "sent");
+            // Add email in the Sent folder
+            await _dataRepository.CreateEmail(emailDto, emailDto.From, "sent");
 
             return true;
         }

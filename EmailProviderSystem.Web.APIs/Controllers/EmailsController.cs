@@ -1,7 +1,7 @@
 ﻿using EmailProviderSystem.Entities.DTOs;
-using EmailProviderSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using EmailProviderSystem.Web.APIs.Filters;
+using EmailProviderSystem.Services.Interfaces.IServices;
 
 namespace EmailProviderSystem.Web.APIs.Controllers
 {

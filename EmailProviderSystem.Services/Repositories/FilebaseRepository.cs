@@ -1,28 +1,28 @@
 ﻿using EmailProviderSystem.Entities.DTOs;
-using EmailProviderSystem.Services.Interfaces;
 using System.Data;
 using Newtonsoft.Json;
 using System.Text.Json;
 using EmailProviderSystem.Entities.Entities;
+using EmailProviderSystem.Services.Interfaces.IServices;
+using EmailProviderSystem.Services.Interfaces.IRepositories;
 
-
-namespace EmailProviderSystem.Services.FilebaseServices
+namespace EmailProviderSystem.Services.Repositories
 {
-    public class FilebaseFileService : IFileService
+    public class FilebaseRepository : IDataRepository
     {
         private IUserService _userService;
-        public FilebaseFileService(IUserService userService)
+        public FilebaseRepository(IUserService userService)
         {
             _userService = userService;
 
         }
-        public bool IsDirectoryExist(string email)
+        public bool IsUserExist(string email)
         {
             var root = GetRootDirectory();
             var directoryPath = Path.Combine(root, email);
             return Directory.Exists(directoryPath);
         }
-        public bool CreateUserFolders(User user)
+        public bool CreateUser(User user)
         {
             var root = GetRootDirectory();
             var directoryPath = Path.Combine(root, user.Email);
@@ -54,28 +54,28 @@ namespace EmailProviderSystem.Services.FilebaseServices
             }
         }
 
-        public FolderFilesDto GetFolders(string path = "")
-        {
-            path = @$"{GetRootDirectory()}{path}";
-            FolderFilesDto folderFiles = new FolderFilesDto();
-            folderFiles.Name = path;
-            folderFiles.SubFolderNames = GetSubFolders(path);
-            folderFiles.FileNames = GetFiles(path);
-            return folderFiles;
-        }
+        //public FolderFilesDto GetFolders(string path = "")
+        //{
+        //    path = @$"{GetRootDirectory()}{path}";
+        //    FolderFilesDto folderFiles = new FolderFilesDto();
+        //    folderFiles.Name = path;
+        //    folderFiles.SubFolderNames = GetSubFolders(path);
+        //    folderFiles.FileNames = GetFiles(path);
+        //    return folderFiles;
+        //}
 
-        public List<string> GetSubFolders(string path)
-        {
-            string[] folders = Directory.GetDirectories(path);
-            List<string> subFolders = new List<string>();
+        //public List<string> GetSubFolders(string path)
+        //{
+        //    string[] folders = Directory.GetDirectories(path);
+        //    List<string> subFolders = new List<string>();
 
-            foreach (string folder in folders)
-            {
-                subFolders.Add(Path.GetFileName(folder));
-            }
+        //    foreach (string folder in folders)
+        //    {
+        //        subFolders.Add(Path.GetFileName(folder));
+        //    }
 
-            return subFolders;
-        }
+        //    return subFolders;
+        //}
 
         public User? GetUserData(string email)
         {
@@ -92,16 +92,16 @@ namespace EmailProviderSystem.Services.FilebaseServices
             return user;
         }
 
-        public List<string> GetFiles(string path)
-        {
-            string[] files = Directory.GetFiles(path);
-            List<string> fileNames = new List<string>();
-            foreach (string file in files)
-            {
-                fileNames.Add(Path.GetFileName(file));
-            }
-            return fileNames;
-        }
+        //public List<string> GetFiles(string path)
+        //{
+        //    string[] files = Directory.GetFiles(path);
+        //    List<string> fileNames = new List<string>();
+        //    foreach (string file in files)
+        //    {
+        //        fileNames.Add(Path.GetFileName(file));
+        //    }
+        //    return fileNames;
+        //}
 
         private string GetRootDirectory()
         {
@@ -112,7 +112,7 @@ namespace EmailProviderSystem.Services.FilebaseServices
         }
 
         //public Move files
-        public async Task<bool> MoveFile(string source, string destination, string fileName)
+        public async Task<bool> MoveEmail(string source, string destination, string fileName)
         {
             var currentUserEmail = _userService.GetUserEmail();
 
@@ -137,7 +137,7 @@ namespace EmailProviderSystem.Services.FilebaseServices
 
         }
 
-        public async Task<bool> CreateFile<T>(T fileDto, string recipient, string directory)
+        public async Task<bool> CreateEmail<T>(T fileDto, string recipient, string directory)
         {
             var root = GetRootDirectory();
 
@@ -163,7 +163,7 @@ namespace EmailProviderSystem.Services.FilebaseServices
             return await System.Text.Json.JsonSerializer.DeserializeAsync<T>(stream, options);
         }
 
-        public async Task<EmailDto?> GetEmailFileAsync(string path, string id)
+        public async Task<EmailDto?> GetEmailAsync(string path, string id)
         {
             var currentUserEmail = _userService.GetUserEmail();
 
@@ -181,7 +181,7 @@ namespace EmailProviderSystem.Services.FilebaseServices
 
         }
 
-        public async Task<List<EmailDto>> GetEmailsFileAsync(string path)
+        public async Task<List<EmailDto>> GetEmailsAsync(string path)
         {
             var currentUserEmail = _userService.GetUserEmail();
 

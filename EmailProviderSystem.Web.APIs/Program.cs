@@ -21,9 +21,11 @@ builder.Services.AddAuthenticationService(builder.Configuration);
 // Register services
 builder.Services.AddAppServices(builder.Configuration);
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+if (builder.Configuration["StoringDataType"] == "Database")
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+       options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
 
 var app = builder.Build();
 

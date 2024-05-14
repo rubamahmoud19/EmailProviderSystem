@@ -2,7 +2,7 @@ using System;
 using EmailProviderSystem.Entities.DTOs;
 using EmailProviderSystem.Entities.Entities;
 
-namespace EmailProviderSystem.Services.Interfaces
+namespace EmailProviderSystem.Services.Interfaces.IServices
 {
     public interface ITokenService
     {

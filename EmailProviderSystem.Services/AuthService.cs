@@ -1,20 +1,23 @@
 ﻿using System;
 using EmailProviderSystem.Entities.DTOs;
 using EmailProviderSystem.Entities.Entities;
-using EmailProviderSystem.Services.Interfaces;
 using System.Text;
+using EmailProviderSystem.Services.Interfaces.IServices;
+using EmailProviderSystem.Services.Interfaces.IRepositories;
 
 
-namespace EmailProviderSystem.Services.DatabaseServices
+namespace EmailProviderSystem.Services
 {
-    public class DatabaseAuthService : IAuthService
+    public class AuthService : IAuthService
     {
 
         private ITokenService _tokenService;
+        private readonly IDataRepository _dataRepository;
 
-        public DatabaseAuthService(ITokenService tokenService)
+        public AuthService(ITokenService tokenService, IDataRepository dataRepository)
         {
             _tokenService = tokenService;
+            _dataRepository = dataRepository;
         }
         private User CreateUserFromDto(AuthDto userDto)
         {
@@ -35,8 +38,7 @@ namespace EmailProviderSystem.Services.DatabaseServices
 
             User user = CreateUserFromDto(loginDto);
 
-            // need update
-            User? userFromDb = null;
+            User? userFromDb = _dataRepository.GetUserData(user.Email);
 
             if (userFromDb == null)
             {
@@ -57,16 +59,14 @@ namespace EmailProviderSystem.Services.DatabaseServices
         {
             User user = CreateUserFromDto(signupDto);
 
-            // need update
-            bool isEmailTaken = false;
+            bool isEmailTaken = _dataRepository.IsUserExist(user.Email);
 
             if (isEmailTaken)
             {
                 throw new Exception("Email is already taken");
             }
 
-            // need update
-            bool isCreated = false;
+            bool isCreated = _dataRepository.CreateUser(user);
 
             if (!isCreated)
             {

@@ -2,12 +2,12 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using EmailProviderSystem.Services.Interfaces;
 using EmailProviderSystem.Entities.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using EmailProviderSystem.Services.Interfaces.IServices;
 
-namespace EmailProviderSystem.Services.MutualServices
+namespace EmailProviderSystem.Services
 {
     public class TokenService : ITokenService
     {
