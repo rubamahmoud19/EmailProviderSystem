@@ -7,14 +7,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Filebase\Users\ahm%40op.com\**" />
+    <Compile Remove="Filebase\Users\moh%40op.com\**" />
+    <EmbeddedResource Remove="Filebase\Users\ahm%40op.com\**" />
+    <EmbeddedResource Remove="Filebase\Users\moh%40op.com\**" />
+    <None Remove="Filebase\Users\ahm%40op.com\**" />
+    <None Remove="Filebase\Users\moh%40op.com\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EmailProviderSystem.Entities\EmailProviderSystem.Entities.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Users\ahm%40op.com\inbox\" />
-    <Folder Include="Users\moh%40op.com\fav\" />
-    <Folder Include="Users\moh%40op.com\important\" />
-    <Folder Include="Users\moh%40op.com\sent\" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

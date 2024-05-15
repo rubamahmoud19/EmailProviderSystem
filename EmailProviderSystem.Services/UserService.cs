@@ -1,10 +1,10 @@
 using System;
-using EmailProviderSystem.Services.Interfaces;
+using EmailProviderSystem.Services.Interfaces.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 
-namespace EmailProviderSystem.Services.Services
+namespace EmailProviderSystem.Services
 {
     public class UserService : IUserService
     {

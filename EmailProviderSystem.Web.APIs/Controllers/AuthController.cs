@@ -1,5 +1,5 @@
 ﻿using EmailProviderSystem.Entities.DTOs;
-using EmailProviderSystem.Services.Interfaces;
+using EmailProviderSystem.Services.Interfaces.IServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmailProviderSystem.Web.APIs.Controllers

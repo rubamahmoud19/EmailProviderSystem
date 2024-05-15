@@ -1,6 +1,6 @@
 using System;
 
-namespace EmailProviderSystem.Services.Interfaces
+namespace EmailProviderSystem.Services.Interfaces.IServices
 {
     public interface IUserService
     {

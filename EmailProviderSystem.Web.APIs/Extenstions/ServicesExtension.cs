@@ -1,21 +1,36 @@
-﻿using EmailProviderSystem.Services.Interfaces;
-using EmailProviderSystem.Services.Services;
+﻿using Castle.Windsor.Installer;
+using EmailProviderSystem.Services;
+using EmailProviderSystem.Services.Interfaces.IRepositories;
+using EmailProviderSystem.Services.Interfaces.IServices;
+using EmailProviderSystem.Services.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Data;
 using System.Text;
 
 namespace EmailProviderSystem.Web.APIs.Extenstions
 {
     public static class ServicesExtension
     {
-        public static IServiceCollection AddAppServices(this IServiceCollection services)
+        public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration configuration)
         {
+
+            string StoringDataType = configuration["StoringDataType"] ?? "Filebase";
+
+            if (StoringDataType == "Filebase")
+            {
+                services.AddSingleton<IDataRepository, FilebaseRepository>();
+            }
+            else
+            {
+                services.AddScoped<IDataRepository, DatabaseRepository>();
+            }
+
             services.AddSingleton<IEmailService, EmailService>();
             services.AddSingleton<IAuthService, AuthService>();
             services.AddSingleton<ITokenService, TokenService>();
             services.AddSingleton<IUserService, UserService>();
-            services.AddSingleton<IFileService, FileService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             return services;
