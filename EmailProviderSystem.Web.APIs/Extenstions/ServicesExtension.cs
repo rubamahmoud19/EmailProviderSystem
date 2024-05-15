@@ -16,7 +16,7 @@ namespace EmailProviderSystem.Web.APIs.Extenstions
         public static IServiceCollection AddAppServices(this IServiceCollection services, IConfiguration configuration)
         {
 
-           string StoringDataType = configuration["StoringDataType"] ?? "Filebase";
+            string StoringDataType = configuration["StoringDataType"] ?? "Filebase";
 
             if (StoringDataType == "Filebase")
             {
@@ -24,8 +24,7 @@ namespace EmailProviderSystem.Web.APIs.Extenstions
             }
             else
             {
-                services.AddSingleton<IDataRepository, FilebaseRepository>();
-                //services.AddSingleton<IDataRepository, DatabaseRepository>();
+                services.AddScoped<IDataRepository, DatabaseRepository>();
             }
 
             services.AddSingleton<IEmailService, EmailService>();
