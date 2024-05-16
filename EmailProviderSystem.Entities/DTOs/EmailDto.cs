@@ -1,4 +1,6 @@
-﻿namespace EmailProviderSystem.Entities.DTOs
+﻿using EmailProviderSystem.Entities.Entities;
+
+namespace EmailProviderSystem.Entities.DTOs
 {
     public class EmailDto
     {

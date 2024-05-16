@@ -20,17 +20,17 @@ namespace EmailProviderSystem.Web.APIs.Extenstions
 
             if (StoringDataType == "Filebase")
             {
-                services.AddSingleton<IDataRepository, FilebaseRepository>();
+                services.AddScoped<IDataRepository, FilebaseRepository>();
             }
             else
             {
                 services.AddScoped<IDataRepository, DatabaseRepository>();
             }
 
-            services.AddSingleton<IEmailService, EmailService>();
-            services.AddSingleton<IAuthService, AuthService>();
-            services.AddSingleton<ITokenService, TokenService>();
-            services.AddSingleton<IUserService, UserService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             return services;

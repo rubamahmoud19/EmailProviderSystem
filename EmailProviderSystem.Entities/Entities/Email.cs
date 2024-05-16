@@ -3,7 +3,6 @@
     public class Email
     {
         public int EmailId { get; set; }
-        public Guid MessageId { get; set; }
         public string Subject { get; set; }
 
         public string Body { get; set; }

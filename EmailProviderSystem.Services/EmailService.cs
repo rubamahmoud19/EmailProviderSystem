@@ -94,11 +94,11 @@ namespace EmailProviderSystem.Services
             List<string> recipients = emailDto.To.Union(emailDto.Cc).ToList();
             foreach (var recipient in recipients)
             {
-                await _dataRepository.CreateEmail(emailDto, recipient, "inbox");
+                await _dataRepository.CreateEmail(emailDto, recipient.ToLower(), "inbox");
             }
 
             // Add email in the Sent folder
-            await _dataRepository.CreateEmail(emailDto, emailDto.From, "sent");
+            await _dataRepository.CreateEmail(emailDto, emailDto.From.ToLower(), "sent");
 
             return true;
         }
