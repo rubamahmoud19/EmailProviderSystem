@@ -1,4 +1,6 @@
-﻿namespace EmailProviderSystem.Entities.DTOs
+﻿using EmailProviderSystem.Entities.Entities;
+
+namespace EmailProviderSystem.Entities.DTOs
 {
     public class EmailDto
     {
@@ -11,8 +13,8 @@
         public List<string> To { get; set; }
 
         public List<string> Cc { get; set; }
-        public bool IsRead { get; set; }
-        public bool IsImportant { get; set; }
+        public bool IsRead { get; set; } = false;
+        public bool IsImportant { get; set; } = false;
 
     }
 }

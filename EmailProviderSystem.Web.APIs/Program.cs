@@ -1,10 +1,11 @@
 using EmailProviderSystem.Services.Interfaces;
-using EmailProviderSystem.Services.Services;
 using EmailProviderSystem.Web.APIs.Extenstions;
+using EmailProviderSystem.Data.Database.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -18,8 +19,13 @@ builder.Services.AddSwagerService();
 builder.Services.AddAuthenticationService(builder.Configuration);
 
 // Register services
-builder.Services.AddAppServices();
+builder.Services.AddAppServices(builder.Configuration);
 
+if (builder.Configuration["StoringDataType"] == "Database")
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+       options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+}
 
 var app = builder.Build();
 

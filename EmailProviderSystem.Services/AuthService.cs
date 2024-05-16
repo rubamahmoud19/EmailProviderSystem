@@ -1,22 +1,23 @@
 ﻿using System;
 using EmailProviderSystem.Entities.DTOs;
 using EmailProviderSystem.Entities.Entities;
-using EmailProviderSystem.Services.Interfaces;
 using System.Text;
+using EmailProviderSystem.Services.Interfaces.IServices;
+using EmailProviderSystem.Services.Interfaces.IRepositories;
 
 
-namespace EmailProviderSystem.Services.Services
+namespace EmailProviderSystem.Services
 {
     public class AuthService : IAuthService
     {
 
         private ITokenService _tokenService;
-        private readonly IFileService _fileService;
+        private readonly IDataRepository _dataRepository;
 
-        public AuthService(ITokenService tokenService, IFileService fileService)
+        public AuthService(ITokenService tokenService, IDataRepository dataRepository)
         {
             _tokenService = tokenService;
-            _fileService = fileService;
+            _dataRepository = dataRepository;
         }
         private User CreateUserFromDto(AuthDto userDto)
         {
@@ -37,7 +38,7 @@ namespace EmailProviderSystem.Services.Services
 
             User user = CreateUserFromDto(loginDto);
 
-            User? userFromDb = _fileService.GetUserData(user.Email);
+            User? userFromDb = _dataRepository.GetUserData(user.Email);
 
             if (userFromDb == null)
             {
@@ -48,7 +49,7 @@ namespace EmailProviderSystem.Services.Services
             {
                 throw new Exception("Password is incorrect");
             }
-            
+
             string token = _tokenService.GenerateToken(user);
 
             return Task.FromResult(token);
@@ -58,15 +59,14 @@ namespace EmailProviderSystem.Services.Services
         {
             User user = CreateUserFromDto(signupDto);
 
-            bool isEmailTaken = _fileService.IsDirectoryExist(user.Email);
+            bool isEmailTaken = _dataRepository.IsUserExist(user.Email);
 
             if (isEmailTaken)
             {
                 throw new Exception("Email is already taken");
             }
 
-            // Create user in database
-            bool isCreated = _fileService.CreateUserFolders(user);
+            bool isCreated = _dataRepository.CreateUser(user);
 
             if (!isCreated)
             {

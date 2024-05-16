@@ -1,5 +1,6 @@
 ﻿using EmailProviderSystem.Entities.DTOs;
-using EmailProviderSystem.Services.Interfaces;
+using EmailProviderSystem.Services.Interfaces.IRepositories;
+using EmailProviderSystem.Services.Interfaces.IServices;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,16 +9,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmailProviderSystem.Services.Services
+namespace EmailProviderSystem.Services
 {
     public class EmailService : IEmailService
     {
-        private IFileService _fileService;
+        private IDataRepository _dataRepository;
         private IUserService _userService;
 
-        public EmailService(IFileService fileService, IUserService userService)
+        public EmailService(IDataRepository dataRepository, IUserService userService)
         {
-            _fileService = fileService;
+            _dataRepository = dataRepository;
             _userService = userService;
         }
         // Done
@@ -28,10 +29,10 @@ namespace EmailProviderSystem.Services.Services
             if (string.IsNullOrEmpty(currentUserEmail))
                 throw new Exception("Unauthorize User");
 
-            var email = await _fileService.GetEmailFileAsync(path, id);
+            var email = await _dataRepository.GetEmailAsync(path, id);
 
             return email;
-            
+
         }
         // Done
         public async Task<List<EmailDto>> GetEmailsAsync(string path)
@@ -41,7 +42,7 @@ namespace EmailProviderSystem.Services.Services
             if (string.IsNullOrEmpty(currentUserEmail))
                 throw new Exception("Unauthorize User");
 
-            var emails = await _fileService.GetEmailsFileAsync(path);
+            var emails = await _dataRepository.GetEmailsAsync(path);
 
             return emails;
         }
@@ -53,7 +54,7 @@ namespace EmailProviderSystem.Services.Services
             if (string.IsNullOrEmpty(currentUserEmail))
                 throw new Exception("Unauthorize User");
 
-            await _fileService.MarkEmailAsReadUnreadAsync(path, id);
+            await _dataRepository.MarkEmailAsReadUnreadAsync(path, id);
 
             return true;
         }
@@ -68,7 +69,7 @@ namespace EmailProviderSystem.Services.Services
             if (req.Source.ToLower() == "sent" || req.Destination.ToLower() == "sent")
                 throw new Exception("Invalid source or destination");
 
-            var isMoved = await _fileService.MoveFile(req.Source, req.Destination, req.fileName);
+            var isMoved = await _dataRepository.MoveEmail(req.Source, req.Destination, req.fileName);
 
             return isMoved;
         }
@@ -93,11 +94,11 @@ namespace EmailProviderSystem.Services.Services
             List<string> recipients = emailDto.To.Union(emailDto.Cc).ToList();
             foreach (var recipient in recipients)
             {
-                await _fileService.CreateFile(emailDto, recipient, "inbox");
+                await _dataRepository.CreateEmail(emailDto, recipient.ToLower(), "inbox");
             }
 
             // Add email in the Sent folder
-            await _fileService.CreateFile(emailDto, emailDto.From, "sent");
+            await _dataRepository.CreateEmail(emailDto, emailDto.From.ToLower(), "sent");
 
             return true;
         }

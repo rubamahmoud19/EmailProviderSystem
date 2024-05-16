@@ -2,7 +2,7 @@
 {
     public class Email
     {
-        public Guid Id { get; set; }
+        public int EmailId { get; set; }
         public string Subject { get; set; }
 
         public string Body { get; set; }
@@ -16,5 +16,10 @@
         public bool IsRead { get; set; } = false;
         public bool IsImportant { get; set; } = false;
 
+        public int FolderId {  get; set; }
+
+        public Folder Folder { get; set; }
+
+        public DateTime CreatedAt { get; set; }
     }
 }

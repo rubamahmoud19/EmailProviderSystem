@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EmailProviderSystem.Data\EmailProviderSystem.Data.csproj" />
     <ProjectReference Include="..\EmailProviderSystem.Services\EmailProviderSystem.Services.csproj" />
   </ItemGroup>
 
