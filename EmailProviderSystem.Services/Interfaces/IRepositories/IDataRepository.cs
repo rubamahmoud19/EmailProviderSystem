@@ -22,7 +22,7 @@ namespace EmailProviderSystem.Services.Interfaces.IRepositories
         public Task<List<EmailDto>> GetEmailsAsync(string path);
         public Task MarkEmailAsReadUnreadAsync(string path, string id);
         // crearFile to CreateEmail
-        public Task<bool> CreateEmail<T>(T fileDto, string recipient, string directory);
+        public Task<bool> CreateEmail(EmailDto fileDto, string recipient, string directory);
         // IsDirectoryExist to isUserExist
         public bool IsUserExist(string email);
     }

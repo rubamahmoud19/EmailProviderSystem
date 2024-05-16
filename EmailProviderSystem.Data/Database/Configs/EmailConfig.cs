@@ -13,7 +13,6 @@ namespace EmailProviderSystem.Data.Database.Configs
     {
         public void Configure(EntityTypeBuilder<Email> modelBuilder)
         {
-            modelBuilder.Property(u => u.MessageId).IsRequired();
             modelBuilder.Property(u => u.From).IsRequired();
 
             modelBuilder.HasOne(u => u.Folder).WithMany(u => u.Emails)

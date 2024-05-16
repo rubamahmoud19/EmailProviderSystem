@@ -137,7 +137,7 @@ namespace EmailProviderSystem.Services.Repositories
 
         }
 
-        public async Task<bool> CreateEmail<T>(T fileDto, string recipient, string directory)
+        public async Task<bool> CreateEmail(EmailDto fileDto, string recipient, string directory)
         {
             var root = GetRootDirectory();
 
@@ -192,7 +192,7 @@ namespace EmailProviderSystem.Services.Repositories
             var isFolderExist = Directory.Exists(folderPath);
 
             if (!isFolderExist)
-                throw new Exception("Directory Not Exist");
+                throw new Exception("Email Not Exist");
 
             List<EmailDto> emails = new List<EmailDto>();
 
